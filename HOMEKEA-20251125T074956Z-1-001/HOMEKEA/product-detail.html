@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายละเอียดสินค้า - HOME KEA</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="enhanced-style.css">
+    <link rel="icon" type="image/png" href="image/logo1.png">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">
+            <img src="image/logo1.png" alt="HOME KEA Logo">
+        </a>
+        <nav>
+            <a href="living-room.html">ห้องนั่งเล่น</a>
+            <a href="bedroom.html">ห้องนอน</a>
+            <a href="kitchen.html">ห้องครัว</a>
+            <a href="contact.html">ติดต่อเรา</a>
+            <div class="cart-icon-wrapper" onclick="goToCart()">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-badge">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <div class="breadcrumb">
+        <a href="index.html">หน้าแรก</a> /
+        <a href="#" id="categoryLink">หมวดหมู่</a> /
+        <span id="productBreadcrumb">สินค้า</span>
+    </div>
+
+    <main>
+        <div class="product-detail-container">
+            <div class="product-detail-grid">
+                <div class="product-gallery">
+                    <img id="mainImage" class="main-image" src="" alt="Product Image" onclick="zoomImage(this)">
+                    <div class="thumbnail-list" id="thumbnailList">
+                        <!-- Thumbnails will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="product-details">
+                    <h1 class="product-detail-title" id="productTitle">กำลังโหลด...</h1>
+
+                    <div class="product-rating">
+                        <div class="stars" id="productStars">★★★★★</div>
+                        <span class="rating-count" id="ratingCount">(0 รีวิว)</span>
+                    </div>
+
+                    <p class="product-detail-price" id="productPrice">0 ฿</p>
+
+                    <div class="product-description" id="productDescription">
+                        <h3>รายละเอียดสินค้า</h3>
+                        <p>เฟอร์นิเจอร์คุณภาพสูง ผลิตจากวัสดุชั้นดี ดีไซน์ทันสมัย เหมาะกับทุกสไตล์การตะแต่งบ้าน</p>
+                        <ul>
+                            <li>วัสดุคุณภาพสูง ทนทาน</li>
+                            <li>ดีไซน์สวยงาม เหนือกาลเวลา</li>
+                            <li>ง่ายต่อการดูแลรักษา</li>
+                            <li>รับประกันสินค้า 1 ปี</li>
+                        </ul>
+                    </div>
+
+                    <div class="quantity-selector">
+                        <label>จำนวน:</label>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" onclick="decreaseQuantity()">-</button>
+                            <input type="number" class="qty-input" id="quantity" value="1" min="1" readonly>
+                            <button class="qty-btn" onclick="increaseQuantity()">+</button>
+                        </div>
+                    </div>
+
+                    <button class="cta-button" onclick="addToCartFromDetail()" style="width: 100%;">
+                        เพิ่มลงตะกร้า
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <section class="reviews-section">
+            <div class="reviews-header">
+                <h2>รีวิวจากลูกค้า</h2>
+            </div>
+            <div id="reviewsList">
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="reviewer-name">สมชาย ใจดี</span>
+                        <span class="review-date">15 พ.ย. 2024</span>
+                    </div>
+                    <div class="review-rating">★★★★★</div>
+                    <p class="review-text">สินค้าดีมาก คุณภาพเยี่ยม ส่งไวมาก พนักงานให้คำแนะนำดีครับ</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="reviewer-name">วิไลวรรณ สุขใจ</span>
+                        <span class="review-date">10 พ.ย. 2024</span>
+                    </div>
+                    <div class="review-rating">★★★★☆</div>
+                    <p class="review-text">สินค้าสวยดี ตรงตามที่คาดหวัง แต่การจัดส่งช้าไปนิดค่ะ</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="reviewer-name">ประยุทธ์ มั่นคง</span>
+                        <span class="review-date">5 พ.ย. 2024</span>
+                    </div>
+                    <div class="review-rating">★★★★★</div>
+                    <p class="review-text">ประทับใจมาก ราคาดี คุณภาพดี ประกอบง่าย จะกลับมาซื้ออีกครับ</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>copyright &copy; Pongsakorn Manosri&Yannapat Saritdikul</p>
+        </div>
+    </footer>
+
+    <script src="cart.js"></script>
+    <script>
+        // รับข้อมูลสินค้าจาก URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const productData = {
+            id: urlParams.get('id') || 'product-1',
+            title: urlParams.get('title') || 'สินค้า',
+            price: parseFloat(urlParams.get('price')) || 0,
+            image: urlParams.get('image') || 'https://via.placeholder.com/500',
+            category: urlParams.get('category') || 'ทั่วไป'
+        };
+
+        // แสดงข้อมูลสินค้า
+        document.getElementById('productTitle').textContent = productData.title;
+        document.getElementById('productPrice').textContent = productData.price.toLocaleString() + ' ฿';
+        document.getElementById('mainImage').src = productData.image;
+        document.getElementById('productBreadcrumb').textContent = productData.title;
+
+        // ตั้งค่า category link
+        const categoryMap = {
+            'ห้องนั่งเล่น': 'living-room.html',
+            'ห้องนอน': 'bedroom.html',
+            'ห้องครัว': 'kitchen.html'
+        };
+        const categoryLink = document.getElementById('categoryLink');
+        categoryLink.textContent = productData.category;
+        categoryLink.href = categoryMap[productData.category] || 'index.html';
+
+        // สร้าง thumbnails
+        const thumbnailList = document.getElementById('thumbnailList');
+        for (let i = 0; i < 3; i++) {
+            const thumb = document.createElement('img');
+            thumb.src = productData.image;
+            thumb.className = 'thumbnail' + (i === 0 ? ' active' : '');
+            thumb.onclick = function() {
+                document.getElementById('mainImage').src = this.src;
+                document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            };
+            thumbnailList.appendChild(thumb);
+        }
+
+        // ฟังก์ชันจัดการจำนวนสินค้า
+        function increaseQuantity() {
+            const qtyInput = document.getElementById('quantity');
+            qtyInput.value = parseInt(qtyInput.value) + 1;
+        }
+
+        function decreaseQuantity() {
+            const qtyInput = document.getElementById('quantity');
+            if (parseInt(qtyInput.value) > 1) {
+                qtyInput.value = parseInt(qtyInput.value) - 1;
+            }
+        }
+
+        // เพิ่มสินค้าลงตะกร้า
+        function addToCartFromDetail() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            for (let i = 0; i < quantity; i++) {
+                addToCart(
+                    productData.id,
+                    productData.title,
+                    productData.price,
+                    productData.image,
+                    productData.category
+                );
+            }
+        }
+
+        // ซูมรูปภาพ
+        function zoomImage(img) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                cursor: zoom-out;
+            `;
+
+            const zoomedImg = document.createElement('img');
+            zoomedImg.src = img.src;
+            zoomedImg.style.cssText = 'max-width: 90%; max-height: 90%; object-fit: contain;';
+
+            modal.appendChild(zoomedImg);
+            modal.onclick = () => modal.remove();
+            document.body.appendChild(modal);
+        }
+    </script>
+</body>
+
+</html>

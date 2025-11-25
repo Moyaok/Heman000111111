@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOMEKEA - เฟอร์นิเจอร์คุณภาพ ดีไซน์สวยงาม</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="enhanced-style.css">
+    <link rel="icon" type="image/png" href="image/logo1.png">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">
+            <img src="image/logo1.png" alt="HOME KEA Logo">
+        </a>
+        <nav>
+            <a href="living-room.html">ห้องนั่งเล่น</a>
+            <a href="bedroom.html">ห้องนอน</a>
+            <a href="kitchen.html">ห้องครัว</a>
+            <a href="contact.html">ติดต่อเรา</a>
+            <div class="cart-icon-wrapper" onclick="goToCart()">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-badge">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="promo-section">
+            <div class="hero-banner">
+                <h1>ค้นพบสไตล์ที่ใช่ ให้บ้านของคุณ</h1>
+                <p>เฟอร์นิเจอร์คุณภาพสูง ดีไซน์เหนือกาลเวลา</p>
+                <a href="#categories" class="cta-button">เลือกชมสินค้าทั้งหมด</a>
+            </div>
+
+            <div class="promo-grid">
+                <div class="promo-card">
+                    <h3>ผ่อน 0%</h3>
+                    <p>นานสูงสุด 12 เดือน</p>
+                </div>
+
+                <div class="promo-card">
+                    <h3>สินค้าใหม่</h3>
+                    <p>โซฟาสไตล์สแกนดิเนเวีย</p>
+                </div>
+
+                <div class="promo-card">
+                    <h3>ลดล้างสต็อก</h3>
+                    <p>ลดสูงสุด 40%</p>
+                </div>
+
+                <div class="promo-card">
+                    <h3>ส่งฟรี</h3>
+                    <p>เมื่อช้อปครบ 5,000.-</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="categories" style="max-width: 1400px; margin: 40px auto; padding: 0 30px;">
+            <h2 style="text-align: center; color: var(--primary-blue); margin-bottom: 30px;">เลือกซื้อตามหมวดหมู่</h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <a href="living-room.html" style="text-decoration: none;">
+                    <div class="category-card">
+                        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc" alt="ห้องนั่งเล่น" style="width: 100%; height: 250px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div style="padding: 20px; background: white; border-radius: 0 0 8px 8px;">
+                            <h3 style="color: var(--primary-blue); margin: 0 0 10px;">ห้องนั่งเล่น</h3>
+                            <p style="color: #666; margin: 0;">โซฟา โต๊ะกลาง ชั้นวางทีวี</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="bedroom.html" style="text-decoration: none;">
+                    <div class="category-card">
+                        <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85" alt="ห้องนอน" style="width: 100%; height: 250px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div style="padding: 20px; background: white; border-radius: 0 0 8px 8px;">
+                            <h3 style="color: var(--primary-blue); margin: 0 0 10px;">ห้องนอน</h3>
+                            <p style="color: #666; margin: 0;">เตียง ตู้เสื้อผ้า โต๊ะข้างเตียง</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="kitchen.html" style="text-decoration: none;">
+                    <div class="category-card">
+                        <img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f" alt="ห้องครัว" style="width: 100%; height: 250px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        <div style="padding: 20px; background: white; border-radius: 0 0 8px 8px;">
+                            <h3 style="color: var(--primary-blue); margin: 0 0 10px;">ห้องครัว</h3>
+                            <p style="color: #666; margin: 0;">ชุดครัว ตู้จัดเก็บ เก้าอี้บาร์</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section style="background-color: #f0f8ff; padding: 60px 30px; margin-top: 40px;">
+            <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+                <h2 style="color: var(--primary-blue); margin-bottom: 20px;">ทำไมต้องเลือก HOME KEA?</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 40px;">
+                    <div>
+                        <div style="font-size: 50px; margin-bottom: 15px;">✓</div>
+                        <h3 style="color: var(--primary-blue);">คุณภาพรับประกัน</h3>
+                        <p style="color: #666;">วัสดุคุณภาพสูง ทนทาน ใช้งานได้ยาวนาน</p>
+                    </div>
+                    <div>
+                        <div style="font-size: 50px; margin-bottom: 15px;">🚚</div>
+                        <h3 style="color: var(--primary-blue);">จัดส่งรวดเร็ว</h3>
+                        <p style="color: #666;">ส่งฟรีเมื่อซื้อครบ 5,000 บาท</p>
+                    </div>
+                    <div>
+                        <div style="font-size: 50px; margin-bottom: 15px;">💰</div>
+                        <h3 style="color: var(--primary-blue);">ราคาคุ้มค่า</h3>
+                        <p style="color: #666;">ผ่อน 0% นานสูงสุด 12 เดือน</p>
+                    </div>
+                    <div>
+                        <div style="font-size: 50px; margin-bottom: 15px;">👥</div>
+                        <h3 style="color: var(--primary-blue);">บริการประทับใจ</h3>
+                        <p style="color: #666;">ทีมงานมืออาชีพพร้อมให้คำปรึกษา</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>copyright &copy; Pongsakorn Manosri&Yannapat Saritdikul</p>
+        </div>
+    </footer>
+
+    <script src="cart.js"></script>
+    <script>
+        // เพิ่ม hover effect สำหรับ category cards
+        const categoryCards = document.querySelectorAll('.category-card');
+        categoryCards.forEach(card => {
+            card.parentElement.style.transition = 'transform 0.3s';
+            card.parentElement.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px)';
+            });
+            card.parentElement.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+
+    <style>
+        .category-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
+        }
+        
+        .category-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</body>
+
+</html>

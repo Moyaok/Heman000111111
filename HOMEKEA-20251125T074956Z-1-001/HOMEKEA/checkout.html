@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ชำระเงิน - HOME KEA</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="enhanced-style.css">
+    <link rel="icon" type="image/png" href="image/logo1.png">
+    <style>
+        .checkout-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 30px;
+        }
+        
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .checkout-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+        }
+        
+        .form-section h3 {
+            color: var(--primary-blue);
+            border-bottom: 2px solid var(--accent-yellow);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .payment-option {
+            border: 2px solid var(--border-color);
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .payment-option:hover {
+            border-color: var(--primary-blue);
+        }
+        
+        .payment-option.selected {
+            border-color: var(--accent-yellow);
+            background-color: #fffbf0;
+        }
+        
+        .payment-option input[type="radio"] {
+            margin-right: 8px;
+        }
+        
+        .order-summary {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            height: fit-content;
+        }
+        
+        .summary-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .summary-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        
+        .summary-item-info {
+            flex: 1;
+        }
+        
+        .summary-item-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .summary-item-qty {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .summary-item-price {
+            font-weight: bold;
+            color: var(--accent-yellow);
+        }
+        
+        @media (max-width: 768px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">
+            <img src="image/logo1.png" alt="HOME KEA Logo">
+        </a>
+        <nav>
+            <a href="living-room.html">ห้องนั่งเล่น</a>
+            <a href="bedroom.html">ห้องนอน</a>
+            <a href="kitchen.html">ห้องครัว</a>
+            <a href="contact.html">ติดต่อเรา</a>
+            <div class="cart-icon-wrapper" onclick="goToCart()">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-badge">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <div class="breadcrumb">
+        <a href="index.html">หน้าแรก</a> /
+        <a href="cart.html">ตะกร้าสินค้า</a> /
+        <span>ชำระเงิน</span>
+    </div>
+
+    <main>
+        <section class="page-header">
+            <h1>ชำระเงิน</h1>
+            <p>กรอกข้อมูลเพื่อทำการสั่งซื้อ</p>
+        </section>
+
+        <div class="checkout-container">
+            <div class="checkout-grid">
+                <div class="checkout-form">
+                    <form id="checkoutForm">
+                        <div class="form-section">
+                            <h3>ข้อมูลการจัดส่ง</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="firstName">ชื่อ *</label>
+                                    <input type="text" id="firstName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName">นามสกุล *</label>
+                                    <input type="text" id="lastName" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">เบอร์โทรศัพท์ *</label>
+                                <input type="tel" id="phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">อีเมล *</label>
+                                <input type="email" id="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">ที่อยู่ *</label>
+                                <textarea id="address" rows="3" required></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="province">จังหวัด *</label>
+                                    <select id="province" required>
+                                        <option value="">เลือกจังหวัด</option>
+                                        <option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
+                                        <option value="เชียงใหม่">เชียงใหม่</option>
+                                        <option value="ภูเก็ต">ภูเก็ต</option>
+                                        <option value="ขอนแก่น">ขอนแก่น</option>
+                                        <option value="อื่นๆ">อื่นๆ</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="postalCode">รหัสไปรษณีย์ *</label>
+                                    <input type="text" id="postalCode" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>วิธีการชำระเงิน</h3>
+                            <div class="payment-methods">
+                                <div class="payment-option selected" onclick="selectPayment('credit')">
+                                    <input type="radio" name="payment" value="credit" checked>
+                                    <label>💳 บัตรเครดิต/เดบิต</label>
+                                </div>
+                                <div class="payment-option" onclick="selectPayment('promptpay')">
+                                    <input type="radio" name="payment" value="promptpay">
+                                    <label>📱 พร้อมเพย์</label>
+                                </div>
+                                <div class="payment-option" onclick="selectPayment('bank')">
+                                    <input type="radio" name="payment" value="bank">
+                                    <label>🏦 โอนผ่านธนาคาร</label>
+                                </div>
+                                <div class="payment-option" onclick="selectPayment('cod')">
+                                    <input type="radio" name="payment" value="cod">
+                                    <label>💵 เก็บเงินปลายทาง</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>หมายเหตุ (ถ้ามี)</h3>
+                            <div class="form-group">
+                                <textarea id="notes" rows="3" placeholder="ข้อความถึงผู้ขาย..."></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="cta-button" style="width: 100%;">
+                            ยืนยันการสั่งซื้อ
+                        </button>
+                    </form>
+                </div>
+
+                <div class="order-summary">
+                    <h2>สรุปคำสั่งซื้อ</h2>
+                    <div id="summaryItems"></div>
+                    <div class="summary-row" style="margin-top: 20px;">
+                        <span>ราคาสินค้า</span>
+                        <span id="summarySubtotal">0 ฿</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>ค่าจัดส่ง</span>
+                        <span id="summaryShipping">0 ฿</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>ยอดรวมทั้งหมด</span>
+                        <span id="summaryTotal">0 ฿</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>copyright &copy; Pongsakorn Manosri&Yannapat Saritdikul</p>
+        </div>
+    </footer>
+
+    <script src="cart.js"></script>
+    <script>
+        // ตรวจสอบว่ามีสินค้าในตะกร้าหรือไม่
+        if (cart.items.length === 0) {
+            window.location.href = 'cart.html';
+        }
+
+        // แสดงสรุปคำสั่งซื้อ
+        function renderOrderSummary() {
+            const summaryItems = document.getElementById('summaryItems');
+            summaryItems.innerHTML = '';
+
+            cart.items.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'summary-item';
+                itemDiv.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="summary-item-info">
+                        <div class="summary-item-title">${item.title}</div>
+                        <div class="summary-item-qty">จำนวน: ${item.quantity}</div>
+                    </div>
+                    <div class="summary-item-price">${(item.price * item.quantity).toLocaleString()} ฿</div>
+                `;
+                summaryItems.appendChild(itemDiv);
+            });
+
+            const subtotal = cart.getTotal();
+            const shipping = subtotal >= 5000 ? 0 : 150;
+            const total = subtotal + shipping;
+
+            document.getElementById('summarySubtotal').textContent = subtotal.toLocaleString() + ' ฿';
+            document.getElementById('summaryShipping').textContent = shipping === 0 ? 'ฟรี' : shipping.toLocaleString() + ' ฿';
+            document.getElementById('summaryTotal').textContent = total.toLocaleString() + ' ฿';
+        }
+
+        // เลือกวิธีการชำระเงิน
+        function selectPayment(method) {
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            document.querySelector(`input[value="${method}"]`).checked = true;
+        }
+
+        // ส่งฟอร์ม
+        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // แสดง loading
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'กำลังดำเนินการ...';
+            submitBtn.disabled = true;
+
+            // จำลองการส่งข้อมูล
+            setTimeout(() => {
+                // รวบรวมข้อมูลคำสั่งซื้อ
+                const orderData = {
+                    customer: {
+                        firstName: document.getElementById('firstName').value,
+                        lastName: document.getElementById('lastName').value,
+                        phone: document.getElementById('phone').value,
+                        email: document.getElementById('email').value,
+                        address: document.getElementById('address').value,
+                        province: document.getElementById('province').value,
+                        postalCode: document.getElementById('postalCode').value
+                    },
+                    payment: document.querySelector('input[name="payment"]:checked').value,
+                    notes: document.getElementById('notes').value,
+                    items: cart.items,
+                    total: cart.getTotal() + (cart.getTotal() >= 5000 ? 0 : 150),
+                    orderDate: new Date().toISOString()
+                };
+
+                // บันทึกคำสั่งซื้อ (ในระบบจริงจะส่งไปยัง server)
+                localStorage.setItem('lastOrder', JSON.stringify(orderData));
+
+                // ล้างตะกร้า
+                cart.clearCart();
+
+                // ไปหน้าขอบคุณ
+                window.location.href = 'order-success.html';
+            }, 2000);
+        });
+
+        // โหลดสรุปคำสั่งซื้อ
+        renderOrderSummary();
+    </script>
+</body>
+
+</html>

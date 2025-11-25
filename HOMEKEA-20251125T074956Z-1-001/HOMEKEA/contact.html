@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ติดต่อเรา - HOME KEA</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="enhanced-style.css">
+    <link rel="icon" type="image/png" href="image/logo1.png">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">
+            <img src="image/logo1.png" alt="HOME KEA Logo">
+        </a>
+        <nav>
+            <a href="living-room.html">ห้องนั่งเล่น</a>
+            <a href="bedroom.html">ห้องนอน</a>
+            <a href="kitchen.html">ห้องครัว</a>
+            <a href="contact.html" class="active">ติดต่อเรา</a>
+            <div class="cart-icon-wrapper" onclick="goToCart()">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-badge">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <div class="breadcrumb">
+        <a href="index.html">หน้าแรก</a> /
+        <span>ติดต่อเรา</span>
+    </div>
+
+    <main>
+        <section class="page-header">
+            <h1>ติดต่อเรา</h1>
+            <p>เราพร้อมให้ความช่วยเหลือ ส่งข้อความถึงเราได้เลย</p>
+        </section>
+
+        <section class="contact-container">
+            <div class="contact-form-wrapper">
+                <h2>ส่งข้อความถึงเรา</h2>
+                <form class="contact-form" id="contactForm">
+                    <label for="name">ชื่อ:</label>
+                    <input type="text" id="name" name="name" required>
+
+                    <label for="email">อีเมล:</label>
+                    <input type="email" id="email" name="email" required>
+
+                    <label for="subject">หัวข้อ:</label>
+                    <select id="subject" name="subject" required>
+                        <option value="">เลือกหัวข้อ</option>
+                        <option value="product">สอบถามเกี่ยวกับสินค้า</option>
+                        <option value="order">สอบถามเกี่ยวกับคำสั่งซื้อ</option>
+                        <option value="delivery">สอบถามเกี่ยวกับการจัดส่ง</option>
+                        <option value="payment">สอบถามเกี่ยวกับการชำระเงิน</option>
+                        <option value="other">อื่นๆ</option>
+                    </select>
+
+                    <label for="message">ข้อความ:</label>
+                    <textarea id="message" name="message" rows="6" required></textarea>
+
+                    <button type="submit" class="cta-button">ส่งข้อความ</button>
+                </form>
+            </div>
+
+            <div class="contact-info-wrapper">
+                <h2>ข้อมูลการติดต่อ</h2>
+                <h3>HOME KEA (สำนักงานใหญ่)</h3>
+                <p>
+                    123 ถนนตัวอย่าง แขวงตัวอย่าง<br> เขตตัวอย่าง กรุงเทพฯ 10110
+                </p>
+                <p><strong>โทร:</strong> 02-123-4567</p>
+                <p><strong>อีเมล:</strong> contact@homekea.th</p>
+
+                <h3>เวลาทำการ</h3>
+                <p>
+                    จันทร์ - ศุกร์: 9:00 - 18:00 น.<br> เสาร์ - อาทิตย์: 10:00 - 17:00 น.
+                </p>
+
+                <h3>ช่องทางติดต่อออนไลน์</h3>
+                <div style="margin-top: 15px;">
+                    <p>📱 Line: @homekea</p>
+                    <p>📘 Facebook: HOME KEA Thailand</p>
+                    <p>📷 Instagram: @homekea_th</p>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background-color: #f0f8ff; border-radius: 8px;">
+                    <h4 style="color: var(--primary-blue); margin-top: 0;">คำถามที่พบบ่อย (FAQ)</h4>
+                    <p style="font-size: 0.9em; margin-bottom: 5px;"><strong>Q: จัดส่งฟรีเมื่อไหร่?</strong></p>
+                    <p style="font-size: 0.9em; margin-bottom: 15px;">A: ซื้อครบ 5,000 บาท รับส่งฟรีทันที</p>
+
+                    <p style="font-size: 0.9em; margin-bottom: 5px;"><strong>Q: ใช้เวลาจัดส่งนานแค่ไหน?</strong></p>
+                    <p style="font-size: 0.9em; margin-bottom: 15px;">A: จัดส่งภายใน 3-5 วันทำการ</p>
+
+                    <p style="font-size: 0.9em; margin-bottom: 5px;"><strong>Q: มีการรับประกันหรือไม่?</strong></p>
+                    <p style="font-size: 0.9em;">A: รับประกันสินค้า 1 ปีเต็ม</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>copyright &copy; Pongsakorn Manosri&Yannapat Saritdikul</p>
+        </div>
+    </footer>
+
+    <script src="cart.js"></script>
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // รวบรวมข้อมูลฟอร์ม
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value,
+                timestamp: new Date().toISOString()
+            };
+
+            // แสดง loading
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'กำลังส่ง...';
+            submitBtn.disabled = true;
+
+            // จำลองการส่งข้อมูล
+            setTimeout(() => {
+                // ในระบบจริงจะส่งข้อมูลไปยัง server
+                console.log('Contact form submitted:', formData);
+
+                // แสดงข้อความสำเร็จ
+                cart.showNotification('ส่งข้อความสำเร็จ! เราจะติดต่อกลับโดยเร็ว', 'success');
+
+                // รีเซ็ตฟอร์ม
+                e.target.reset();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }, 1500);
+        });
+    </script>
+</body>
+
+</html>

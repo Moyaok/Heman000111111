@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตะกร้าสินค้า - HOME KEA</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="enhanced-style.css">
+    <link rel="icon" type="image/png" href="image/logo1.png">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">
+            <img src="image/logo1.png" alt="HOME KEA Logo">
+        </a>
+        <nav>
+            <a href="living-room.html">ห้องนั่งเล่น</a>
+            <a href="bedroom.html">ห้องนอน</a>
+            <a href="kitchen.html">ห้องครัว</a>
+            <a href="contact.html">ติดต่อเรา</a>
+            <div class="cart-icon-wrapper" onclick="goToCart()">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-badge">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <div class="breadcrumb">
+        <a href="index.html">หน้าแรก</a> /
+        <span>ตะกร้าสินค้า</span>
+    </div>
+
+    <main>
+        <section class="page-header">
+            <h1>ตะกร้าสินค้าของคุณ</h1>
+            <p id="cartItemCount">คุณมี 0 รายการในตะกร้า</p>
+        </section>
+
+        <div class="cart-container">
+            <div id="cartContent">
+                <!-- Cart content will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>copyright &copy; Pongsakorn Manosri&Yannapat Saritdikul</p>
+        </div>
+    </footer>
+
+    <script src="cart.js"></script>
+    <script>
+        function renderCart() {
+            const cartContent = document.getElementById('cartContent');
+            const itemCount = cart.getItemCount();
+
+            document.getElementById('cartItemCount').textContent =
+                `คุณมี ${itemCount} รายการในตะกร้า`;
+
+            if (cart.items.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <h2>ตะกร้าสินค้าของคุณว่างเปล่า</h2>
+                        <p>เริ่มช้อปปิ้งและเพิ่มสินค้าลงตะกร้ากันเลย!</p>
+                        <a href="index.html" class="cta-button">เริ่มช้อปปิ้ง</a>
+                    </div>
+                `;
+                return;
+            }
+
+            const cartGrid = document.createElement('div');
+            cartGrid.className = 'cart-grid';
+
+            // Cart Items Section
+            const cartItems = document.createElement('div');
+            cartItems.className = 'cart-items';
+            cartItems.innerHTML = '<h2>รายการสินค้า</h2>';
+
+            cart.items.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}" class="cart-item-image">
+                    <div class="cart-item-info">
+                        <h3>${item.title}</h3>
+                        <p class="cart-item-category">${item.category}</p>
+                    </div>
+                    <div class="cart-item-price">${item.price.toLocaleString()} ฿</div>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateItemQuantity('${item.id}', ${item.quantity - 1})">-</button>
+                        <input type="number" class="qty-input" value="${item.quantity}" readonly>
+                        <button class="qty-btn" onclick="updateItemQuantity('${item.id}', ${item.quantity + 1})">+</button>
+                    </div>
+                    <button class="remove-btn" onclick="removeItemFromCart('${item.id}')">ลบ</button>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+
+            // Cart Summary Section
+            const cartSummary = document.createElement('div');
+            cartSummary.className = 'cart-summary';
+
+            const subtotal = cart.getTotal();
+            const shipping = subtotal >= 5000 ? 0 : 150;
+            const total = subtotal + shipping;
+
+            cartSummary.innerHTML = `
+                <h2>สรุปคำสั่งซื้อ</h2>
+                <div class="summary-row">
+                    <span>ราคาสินค้า</span>
+                    <span>${subtotal.toLocaleString()} ฿</span>
+                </div>
+                <div class="summary-row">
+                    <span>ค่าจัดส่ง</span>
+                    <span>${shipping === 0 ? 'ฟรี' : shipping.toLocaleString() + ' ฿'}</span>
+                </div>
+                ${shipping === 0 ? '' : `
+                    <p style="font-size: 0.9em; color: #666; margin: 10px 0;">
+                        💡 ซื้อเพิ่มอีก ${(5000 - subtotal).toLocaleString()} ฿ เพื่อรับส่งฟรี!
+                    </p>
+                `}
+                <div class="summary-row total">
+                    <span>ยอดรวมทั้งหมด</span>
+                    <span>${total.toLocaleString()} ฿</span>
+                </div>
+                <button class="cta-button checkout-btn" onclick="proceedToCheckout()">
+                    ดำเนินการชำระเงิน
+                </button>
+                <button class="cta-button checkout-btn" onclick="continueShopping()" 
+                    style="background-color: white; color: var(--primary-blue); border: 2px solid var(--primary-blue);">
+                    เลือกซื้อสินค้าต่อ
+                </button>
+            `;
+
+            cartGrid.appendChild(cartItems);
+            cartGrid.appendChild(cartSummary);
+            cartContent.appendChild(cartGrid);
+        }
+
+        function updateItemQuantity(productId, newQuantity) {
+            if (newQuantity < 1) {
+                if (confirm('ต้องการลบสินค้านี้ออกจากตะกร้าหรือไม่?')) {
+                    cart.removeItem(productId);
+                    renderCart();
+                }
+            } else {
+                cart.updateQuantity(productId, newQuantity);
+                renderCart();
+            }
+        }
+
+        function removeItemFromCart(productId) {
+            if (confirm('ต้องการลบสินค้านี้ออกจากตะกร้าหรือไม่?')) {
+                cart.removeItem(productId);
+                renderCart();
+            }
+        }
+
+        function proceedToCheckout() {
+            window.location.href = 'checkout.html';
+        }
+
+        function continueShopping() {
+            window.location.href = 'index.html';
+        }
+
+        // Load cart on page load
+        renderCart();
+    </script>
+</body>
+
+</html>

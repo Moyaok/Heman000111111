@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ห้องนอน - HOME KEA</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="enhanced-style.css">
+    <link rel="icon" type="image/png" href="image/logo1.png">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">
+            <img src="image/logo1.png" alt="HOME KEA Logo">
+        </a>
+        <nav>
+            <a href="living-room.html">ห้องนั่งเล่น</a>
+            <a href="bedroom.html" class="active">ห้องนอน</a>
+            <a href="kitchen.html">ห้องครัว</a>
+            <a href="contact.html">ติดต่อเรา</a>
+            <div class="cart-icon-wrapper" onclick="goToCart()">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-badge">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <div class="breadcrumb">
+        <a href="index.html">หน้าแรก</a> /
+        <span>ห้องนอน</span>
+    </div>
+
+    <main>
+        <section class="page-header">
+            <h1>สินค้าในหมวด: ห้องนอน</h1>
+            <p>เลือกเตียง ตู้เสื้อผ้า และเฟอร์นิเจอร์อื่นๆ สำหรับห้องของคุณ</p>
+        </section>
+
+        <section class="product-grid-container">
+            <div class="filter-section">
+                <div class="filter-controls">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="ค้นหาสินค้า..." onkeyup="filterProducts()">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    <div class="filter-group">
+                        <label>เรียงตาม:</label>
+                        <select id="sortSelect" onchange="sortProducts()">
+                            <option value="default">เริ่มต้น</option>
+                            <option value="price-low">ราคา: ต่ำ - สูง</option>
+                            <option value="price-high">ราคา: สูง - ต่ำ</option>
+                            <option value="name">ชื่อสินค้า</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>ช่วงราคา:</label>
+                        <select id="priceFilter" onchange="filterProducts()">
+                            <option value="all">ทั้งหมด</option>
+                            <option value="0-5000">0 - 5,000 ฿</option>
+                            <option value="5000-10000">5,000 - 10,000 ฿</option>
+                            <option value="10000-20000">10,000 - 20,000 ฿</option>
+                            <option value="20000+">20,000+ ฿</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-grid" id="productGrid">
+                <!-- Products will be rendered here -->
+            </div>
+
+            <div id="noResults" style="display: none; text-align: center; padding: 60px 20px;">
+                <div style="font-size: 60px; color: #ddd;">🔍</div>
+                <h3>ไม่พบสินค้าที่ค้นหา</h3>
+                <p>ลองใช้คำค้นหาอื่นหรือปรับตัวกรอง</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>copyright &copy; Pongsakorn Manosri&Yannapat Saritdikul</p>
+        </div>
+    </footer>
+
+    <script src="cart.js"></script>
+    <script>
+        // ข้อมูลสินค้า
+        const products = [{
+            id: 'bedroom-1',
+            title: 'เตียงไม้โอ๊ค รุ่น "Muji"',
+            price: 14500,
+            image: 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcS5-PTJlwVibmOnaPNVXQCui2nnWC14dTRcHdaYxqORFP2W1VmV08xG1fs8DwbFDWmkVfwp-nkVqko4fUhRmpgOVj4MjFb0tuEYJr9rNvldzNWIGIhQhBPxdKcIy8Fw2SoRmiI2zA&usqp=CAc',
+            category: 'ห้องนอน'
+        }, {
+            id: 'bedroom-2',
+            title: 'ตู้เสื้อผ้า 3 บาน รุ่น "Oslo"',
+            price: 9800,
+            image: 'https://www.indexlivingmall.com/_next/image?url=https%3A%2F%2Fmedia.indexlivingmall.com%2Fmedia%2Fcatalog%2Fproduct%2F1%2F2%2F120027191_c_Zino_o__3D_LO_WT.JPG&w=1920&q=75',
+            category: 'ห้องนอน'
+        }, {
+            id: 'bedroom-3',
+            title: 'โต๊ะข้างเตียง รุ่น "Walnut"',
+            price: 2200,
+            image: 'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSFMkSfW6iqx8IxQcm8XRPzEXcdCDyEVJ2DlycmJy9Y1P6SbK-k0Ha7QqwT6j-6BwgsZqEVjLuzbUCCPA3W9cGeH1w8zr92k5OIZS61u4Tw2PRmlndoz_UfOlC1hOgRqLXPH3bkBD4dug&usqp=CAc',
+            category: 'ห้องนอน'
+        }];
+
+        let filteredProducts = [...products];
+
+        // แสดงสินค้า
+        function renderProducts(productsToRender) {
+            const grid = document.getElementById('productGrid');
+            const noResults = document.getElementById('noResults');
+
+            grid.innerHTML = '';
+
+            if (productsToRender.length === 0) {
+                grid.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            noResults.style.display = 'none';
+
+            productsToRender.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-image" onclick="goToProductDetail('${product.id}', '${encodeURIComponent(product.title)}', ${product.price}, '${encodeURIComponent(product.image)}', '${product.category}')">
+                        <img src="${product.image}" alt="${product.title}">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${product.title}</h3>
+                        <p class="product-price">${product.price.toLocaleString()} ฿</p>
+                        <button class="add-to-cart-btn" onclick="addToCart('${product.id}', '${product.title}', ${product.price}, '${product.image}', '${product.category}')">
+                            เพิ่มลงตะกร้า
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ค้นหาและกรองสินค้า
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const priceRange = document.getElementById('priceFilter').value;
+
+            filteredProducts = products.filter(product => {
+                const matchesSearch = product.title.toLowerCase().includes(searchTerm);
+
+                let matchesPrice = true;
+                if (priceRange !== 'all') {
+                    const [min, max] = priceRange.split('-').map(p => p.replace('+', ''));
+                    const minPrice = parseInt(min);
+                    const maxPrice = max ? parseInt(max) : Infinity;
+                    matchesPrice = product.price >= minPrice && product.price <= maxPrice;
+                }
+
+                return matchesSearch && matchesPrice;
+            });
+
+            sortProducts();
+        }
+
+        // เรียงลำดับสินค้า
+        function sortProducts() {
+            const sortValue = document.getElementById('sortSelect').value;
+
+            switch (sortValue) {
+                case 'price-low':
+                    filteredProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'name':
+                    filteredProducts.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                default:
+                    filteredProducts = [...products];
+                    filterProducts();
+                    return;
+            }
+
+            renderProducts(filteredProducts);
+        }
+
+        // ไปหน้ารายละเอียดสินค้า
+        function goToProductDetail(id, title, price, image, category) {
+            window.location.href = `product-detail.html?id=${id}&title=${title}&price=${price}&image=${image}&category=${encodeURIComponent(category)}`;
+        }
+
+        // โหลดสินค้าเริ่มต้น
+        renderProducts(products);
+    </script>
+</body>
+
+</html>
