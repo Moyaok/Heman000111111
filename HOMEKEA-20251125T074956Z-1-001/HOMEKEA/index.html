@@ -131,16 +131,19 @@
         </div>
     </footer>
 
+    <!-- ใช้ cart.js เหมือนทุกหน้า -->
     <script src="cart.js"></script>
+
+    <!-- hover effect สำหรับการ์ดหมวดหมู่ -->
     <script>
-        // เพิ่ม hover effect สำหรับ category cards
         const categoryCards = document.querySelectorAll('.category-card');
         categoryCards.forEach(card => {
-            card.parentElement.style.transition = 'transform 0.3s';
-            card.parentElement.addEventListener('mouseenter', function() {
+            const wrapper = card.parentElement;
+            wrapper.style.transition = 'transform 0.3s';
+            wrapper.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-10px)';
             });
-            card.parentElement.addEventListener('mouseleave', function() {
+            wrapper.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateY(0)';
             });
         });
@@ -159,6 +162,7 @@
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
         }
     </style>
+
 </body>
 
 </html>

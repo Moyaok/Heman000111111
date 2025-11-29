@@ -87,26 +87,28 @@
         </div>
     </footer>
 
+    <!-- โหลด cart.js แค่ครั้งเดียวพอ -->
     <script src="cart.js"></script>
+
     <script>
-        // ข้อมูลสินค้า
+        // ข้อมูลสินค้า – ห้องครัว
         const products = [{
             id: 'kitchen-1',
-            title: 'ชุดเคาน์เตอร์ครัว รุ่น "Loft"',
-            price: 28000,
-            image: 'https://images.unsplash.com/photo-1556911220-bff31c812dba',
+            title: 'ชุดเคาน์เตอร์ครัวบิวท์อินสีขาว',
+            price: 25900,
+            image: 'https://www.ikea.com/pimg/1035578_pe838113_s5.jpg?f=xl',
             category: 'ห้องครัว'
         }, {
             id: 'kitchen-2',
-            title: 'ตู้จัดเก็บในครัว "Minimal"',
-            price: 6900,
-            image: 'https://th-test-11.slatic.net/p/1881252dca1830447b312fe0be976401.jpg',
+            title: 'ตู้แขวนครัวกระจกฝ้า รุ่น "GlassLine"',
+            price: 8900,
+            image: 'https://media.tarad.com/g/geng_heng/img-lib/spd_20140707102529_b.jpg',
             category: 'ห้องครัว'
         }, {
             id: 'kitchen-3',
-            title: 'เก้าอี้บาร์ (แพ็ค 2)',
-            price: 3100,
-            image: 'https://images.unsplash.com/photo-1503602642458-232111445657',
+            title: 'โต๊ะเตรียมอาหารสเตนเลส',
+            price: 5200,
+            image: 'https://inwfile.com/s-cw/pzrsdo.jpg',
             category: 'ห้องครัว'
         }];
 
@@ -119,7 +121,7 @@
 
             grid.innerHTML = '';
 
-            if (productsToRender.length === 0) {
+            if (!productsToRender.length) {
                 grid.style.display = 'none';
                 noResults.style.display = 'block';
                 return;
@@ -132,22 +134,43 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
-                    <div class="product-image" onclick="goToProductDetail('${product.id}', '${encodeURIComponent(product.title)}', ${product.price}, '${encodeURIComponent(product.image)}', '${product.category}')">
+                    <div class="product-image">
                         <img src="${product.image}" alt="${product.title}">
                     </div>
                     <div class="product-info">
                         <h3 class="product-title">${product.title}</h3>
                         <p class="product-price">${product.price.toLocaleString()} ฿</p>
-                        <button class="add-to-cart-btn" onclick="addToCart('${product.id}', '${product.title}', ${product.price}, '${product.image}', '${product.category}')">
-                            เพิ่มลงตะกร้า
-                        </button>
+                        <button class="add-to-cart-btn">เพิ่มลงตะกร้า</button>
                     </div>
                 `;
+
+                // คลิกรูป → ไปหน้ารายละเอียด
+                card.querySelector('.product-image').addEventListener('click', () => {
+                    goToProductDetail(
+                        product.id,
+                        product.title,
+                        product.price,
+                        product.image,
+                        product.category
+                    );
+                });
+
+                // ปุ่มเพิ่มลงตะกร้า
+                card.querySelector('.add-to-cart-btn').addEventListener('click', () => {
+                    addToCart(
+                        product.id,
+                        product.title,
+                        product.price,
+                        product.image,
+                        product.category
+                    );
+                });
+
                 grid.appendChild(card);
             });
         }
 
-        // ค้นหาและกรองสินค้า
+        // ค้นหา + กรอง
         function filterProducts() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const priceRange = document.getElementById('priceFilter').value;
@@ -157,9 +180,9 @@
 
                 let matchesPrice = true;
                 if (priceRange !== 'all') {
-                    const [min, max] = priceRange.split('-').map(p => p.replace('+', ''));
-                    const minPrice = parseInt(min);
-                    const maxPrice = max ? parseInt(max) : Infinity;
+                    const [min, maxRaw] = priceRange.split('-');
+                    const minPrice = parseInt(min || '0', 10);
+                    const maxPrice = maxRaw ? parseInt(maxRaw.replace('+', ''), 10) : Infinity;
                     matchesPrice = product.price >= minPrice && product.price <= maxPrice;
                 }
 
@@ -169,37 +192,130 @@
             sortProducts();
         }
 
-        // เรียงลำดับสินค้า
+        // เรียงลำดับ
         function sortProducts() {
             const sortValue = document.getElementById('sortSelect').value;
+            let list = [...filteredProducts];
 
-            switch (sortValue) {
-                case 'price-low':
-                    filteredProducts.sort((a, b) => a.price - b.price);
-                    break;
-                case 'price-high':
-                    filteredProducts.sort((a, b) => b.price - a.price);
-                    break;
-                case 'name':
-                    filteredProducts.sort((a, b) => a.title.localeCompare(b.title));
-                    break;
-                default:
-                    filteredProducts = [...products];
-                    filterProducts();
-                    return;
+            if (sortValue === 'price-low') {
+                list.sort((a, b) => a.price - b.price);
+            } else if (sortValue === 'price-high') {
+                list.sort((a, b) => b.price - a.price);
+            } else if (sortValue === 'name') {
+                list.sort((a, b) => a.title.localeCompare(b.title));
             }
 
-            renderProducts(filteredProducts);
+            renderProducts(list);
         }
 
-        // ไปหน้ารายละเอียดสินค้า
+        // ไปหน้ารายละเอียดสินค้า (ใช้แบบเดียวกับห้องนั่งเล่น)
         function goToProductDetail(id, title, price, image, category) {
-            window.location.href = `product-detail.html?id=${id}&title=${title}&price=${price}&image=${image}&category=${encodeURIComponent(category)}`;
+            const url = new URL('product-detail.html', window.location.href);
+            url.searchParams.set('id', id);
+            url.searchParams.set('title', title);
+            url.searchParams.set('price', price);
+            url.searchParams.set('image', image);
+            url.searchParams.set('category', category);
+            window.location.href = url.toString();
         }
 
-        // โหลดสินค้าเริ่มต้น
+        // โหลดครั้งแรก
         renderProducts(products);
     </script>
+
+    <!-- Floating Cart Button -->
+    <div class="floating-cart" onclick="goToCart()" role="button" aria-label="ตะกร้าสินค้า" tabindex="0" onkeypress="handleCartKeyPress(event)">
+        <div class="floating-cart-button">
+            <span class="floating-cart-icon">🛒</span>
+            <span class="floating-cart-badge" id="floatingCartBadge">0</span>
+        </div>
+        <div class="floating-cart-tooltip">
+            ตะกร้าสินค้า
+        </div>
+        <div class="floating-cart-preview" id="floatingCartPreview">
+            <div class="cart-preview-items">
+                <span id="previewItemCount">0</span> รายการ
+            </div>
+            <div class="cart-preview-total">
+                ฿<span id="previewTotal">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // อัพเดท Badge ของ Floating Cart
+        function updateFloatingCart() {
+            const badge = document.getElementById('floatingCartBadge');
+            const itemCount = document.getElementById('previewItemCount');
+            const totalAmount = document.getElementById('previewTotal');
+            const floatingCart = document.querySelector('.floating-cart');
+
+            if (badge && itemCount && totalAmount) {
+                const count = cart.getItemCount();
+                const total = cart.getTotal();
+
+                badge.textContent = count;
+                itemCount.textContent = count;
+                totalAmount.textContent = total.toLocaleString();
+
+                if (count > 0) {
+                    badge.style.display = 'flex';
+                    floatingCart.classList.remove('empty-cart');
+                } else {
+                    badge.style.display = 'none';
+                    floatingCart.classList.add('empty-cart');
+                }
+            }
+        }
+
+        function animateFloatingCart() {
+            const floatingCart = document.querySelector('.floating-cart');
+            floatingCart.classList.add('item-added', 'clicked');
+            setTimeout(() => {
+                floatingCart.classList.remove('item-added', 'clicked');
+            }, 600);
+        }
+
+        // hook ฟังก์ชัน addToCart เดิมจาก cart.js
+        const originalAddToCart = window.addToCart;
+        window.addToCart = function(productId, title, price, image, category) {
+            originalAddToCart(productId, title, price, image, category);
+            animateFloatingCart();
+            updateFloatingCart();
+        };
+
+        function handleCartKeyPress(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                goToCart();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateFloatingCart();
+            setInterval(updateFloatingCart, 500);
+        });
+
+        if (typeof cart !== 'undefined') {
+            const originalSaveCart = cart.saveCart.bind(cart);
+            cart.saveCart = function() {
+                originalSaveCart();
+                updateFloatingCart();
+            };
+        }
+
+        const originalGoToCart = window.goToCart;
+        window.goToCart = function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            setTimeout(() => {
+                originalGoToCart();
+            }, 300);
+        };
+    </script>
+
 </body>
 
 </html>

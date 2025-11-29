@@ -9,6 +9,89 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="enhanced-style.css">
     <link rel="icon" type="image/png" href="image/logo1.png">
+
+    <style>
+        /* ===================================
+           CSS สำหรับปุ่ม FLOATING CART
+           (เพิ่มส่วนนี้เพื่อให้ปุ่มลอยอยู่ที่มุมขวาล่าง)
+           =================================== */
+        
+        .floating-cart {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .floating-cart:hover {
+            transform: scale(1.1);
+        }
+        
+        .floating-cart-button {
+            background-color: #ff9800;
+            /* สีปุ่ม (ปรับตาม Theme) */
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .floating-cart-icon {
+            font-size: 24px;
+        }
+        
+        .floating-cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+        /* Animation เมื่อกดเพิ่มสินค้า */
+        
+        .floating-cart.item-added {
+            animation: bounce 0.5s;
+        }
+        
+        @keyframes bounce {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+        /* Tooltip และ Preview (Optional - ซ่อนไว้ก่อนถ้ายังไม่มี CSS รองรับ) */
+        
+        .floating-cart-tooltip,
+        .floating-cart-preview {
+            display: none;
+            /* เปิดใช้งานเมื่อต้องการ */
+        }
+        /* ซ่อนปุ่มถ้าตะกร้าว่าง (ถ้าต้องการ) */
+        
+        .floating-cart.empty-cart {
+            display: none;
+            /* หรือเปลี่ยนเป็น opacity: 0.5; */
+        }
+    </style>
 </head>
 
 <body>
@@ -41,7 +124,6 @@
                 <div class="product-gallery">
                     <img id="mainImage" class="main-image" src="" alt="Product Image" onclick="zoomImage(this)">
                     <div class="thumbnail-list" id="thumbnailList">
-                        <!-- Thumbnails will be inserted here -->
                     </div>
                 </div>
 
@@ -95,7 +177,6 @@
                     <div class="review-rating">★★★★★</div>
                     <p class="review-text">สินค้าดีมาก คุณภาพเยี่ยม ส่งไวมาก พนักงานให้คำแนะนำดีครับ</p>
                 </div>
-
                 <div class="review-card">
                     <div class="review-header">
                         <span class="reviewer-name">วิไลวรรณ สุขใจ</span>
@@ -104,7 +185,6 @@
                     <div class="review-rating">★★★★☆</div>
                     <p class="review-text">สินค้าสวยดี ตรงตามที่คาดหวัง แต่การจัดส่งช้าไปนิดค่ะ</p>
                 </div>
-
                 <div class="review-card">
                     <div class="review-header">
                         <span class="reviewer-name">ประยุทธ์ มั่นคง</span>
@@ -123,25 +203,38 @@
         </div>
     </footer>
 
+    <div class="floating-cart" onclick="goToCart()" role="button" aria-label="ตะกร้าสินค้า" tabindex="0" onkeypress="handleCartKeyPress(event)">
+        <div class="floating-cart-button">
+            <span class="floating-cart-icon">🛒</span>
+            <span class="floating-cart-badge" id="floatingCartBadge">0</span>
+        </div>
+
+        <div class="floating-cart-preview" id="floatingCartPreview" style="display:none;">
+            <span id="previewTotal">0</span>
+        </div>
+    </div>
+
     <script src="cart.js"></script>
     <script>
-        // รับข้อมูลสินค้าจาก URL parameters
+        // ===================================
+        // PRODUCT PAGE LOGIC
+        // ===================================
         const urlParams = new URLSearchParams(window.location.search);
         const productData = {
             id: urlParams.get('id') || 'product-1',
-            title: urlParams.get('title') || 'สินค้า',
+            title: urlParams.get('title') || 'สินค้าทั่วไป',
             price: parseFloat(urlParams.get('price')) || 0,
             image: urlParams.get('image') || 'https://via.placeholder.com/500',
             category: urlParams.get('category') || 'ทั่วไป'
         };
 
-        // แสดงข้อมูลสินค้า
+        // Render UI
         document.getElementById('productTitle').textContent = productData.title;
         document.getElementById('productPrice').textContent = productData.price.toLocaleString() + ' ฿';
         document.getElementById('mainImage').src = productData.image;
         document.getElementById('productBreadcrumb').textContent = productData.title;
 
-        // ตั้งค่า category link
+        // Category Link
         const categoryMap = {
             'ห้องนั่งเล่น': 'living-room.html',
             'ห้องนอน': 'bedroom.html',
@@ -151,7 +244,7 @@
         categoryLink.textContent = productData.category;
         categoryLink.href = categoryMap[productData.category] || 'index.html';
 
-        // สร้าง thumbnails
+        // Create Thumbnails
         const thumbnailList = document.getElementById('thumbnailList');
         for (let i = 0; i < 3; i++) {
             const thumb = document.createElement('img');
@@ -165,7 +258,7 @@
             thumbnailList.appendChild(thumb);
         }
 
-        // ฟังก์ชันจัดการจำนวนสินค้า
+        // Quantity Logic
         function increaseQuantity() {
             const qtyInput = document.getElementById('quantity');
             qtyInput.value = parseInt(qtyInput.value) + 1;
@@ -178,45 +271,119 @@
             }
         }
 
-        // เพิ่มสินค้าลงตะกร้า
-        function addToCartFromDetail() {
-            const quantity = parseInt(document.getElementById('quantity').value);
-            for (let i = 0; i < quantity; i++) {
-                addToCart(
-                    productData.id,
-                    productData.title,
-                    productData.price,
-                    productData.image,
-                    productData.category
-                );
-            }
-        }
-
-        // ซูมรูปภาพ
+        // Zoom Logic
         function zoomImage(img) {
             const modal = document.createElement('div');
             modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.9);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 10000;
-                cursor: zoom-out;
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.9); display: flex; align-items: center;
+                justify-content: center; z-index: 10000; cursor: zoom-out;
             `;
-
             const zoomedImg = document.createElement('img');
             zoomedImg.src = img.src;
             zoomedImg.style.cssText = 'max-width: 90%; max-height: 90%; object-fit: contain;';
-
             modal.appendChild(zoomedImg);
             modal.onclick = () => modal.remove();
             document.body.appendChild(modal);
         }
+
+        // ===================================
+        // CART INTEGRATION LOGIC
+        // ===================================
+
+        // 1. Add to Cart from Button
+        function addToCartFromDetail() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            // ตรวจสอบว่ามีฟังก์ชัน addToCart หรือไม่ (มาจาก cart.js)
+            if (typeof addToCart === 'function') {
+                for (let i = 0; i < quantity; i++) {
+                    addToCart(
+                        productData.id,
+                        productData.title,
+                        productData.price,
+                        productData.image,
+                        productData.category
+                    );
+                }
+            } else {
+                console.error("cart.js not loaded or addToCart function missing");
+                alert("เกิดข้อผิดพลาด: ไม่สามารถเพิ่มสินค้าได้");
+            }
+        }
+
+        // 2. Floating Cart Update Logic
+        function updateFloatingCart() {
+            const badge = document.getElementById('floatingCartBadge');
+            const floatingCart = document.querySelector('.floating-cart');
+
+            // ตรวจสอบว่า cart object มีอยู่จริง
+            if (typeof cart !== 'undefined' && badge) {
+                const count = cart.getItemCount ? cart.getItemCount() : 0;
+
+                badge.textContent = count;
+
+                // Toggle visibility based on count
+                if (count > 0) {
+                    badge.style.display = 'flex';
+                    floatingCart.classList.remove('empty-cart');
+                } else {
+                    badge.style.display = 'none';
+                    // floatingCart.classList.add('empty-cart'); // Uncomment ถ้าอยากซ่อนปุ่มตอนไม่มีของ
+                }
+            }
+        }
+
+        // 3. Animation Logic
+        function animateFloatingCart() {
+            const floatingCart = document.querySelector('.floating-cart');
+            if (floatingCart) {
+                floatingCart.classList.add('item-added');
+                setTimeout(() => {
+                    floatingCart.classList.remove('item-added');
+                }, 500);
+            }
+        }
+
+        // 4. Override addToCart to add animation (Safety Wrapper)
+        const originalAddToCart = window.addToCart;
+        window.addToCart = function(id, title, price, img, cat) {
+            if (originalAddToCart) {
+                originalAddToCart(id, title, price, img, cat);
+                animateFloatingCart();
+                updateFloatingCart();
+            }
+        };
+
+        // 5. Override goToCart for Smooth Scroll
+        const originalGoToCart = window.goToCart;
+        window.goToCart = function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            setTimeout(() => {
+                if (typeof originalGoToCart === 'function') {
+                    originalGoToCart(); // ไปหน้า cart.html (หรือตามที่ cart.js กำหนด)
+                } else {
+                    window.location.href = 'cart.html'; // Fallback
+                }
+            }, 300);
+        };
+
+        // 6. Keyboard Handler
+        function handleCartKeyPress(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                goToCart();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateFloatingCart();
+            // เช็ค update เผื่อมีการเปลี่ยนแปลงจากหน้าอื่น (ผ่าน localStorage)
+            setInterval(updateFloatingCart, 1000);
+        });
     </script>
 </body>
 

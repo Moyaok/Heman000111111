@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="enhanced-style.css">
     <link rel="icon" type="image/png" href="image/logo1.png">
     <style>
+        /* ===================================
+           CSS เฉพาะหน้า Checkout
+           =================================== */
+        
         .checkout-container {
             max-width: 1200px;
             margin: 30px auto;
@@ -149,6 +153,61 @@
                 grid-template-columns: 1fr;
             }
         }
+        /* ===================================
+           CSS สำหรับปุ่ม FLOATING CART
+           =================================== */
+        
+        .floating-cart {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .floating-cart:hover {
+            transform: scale(1.1);
+        }
+        
+        .floating-cart-button {
+            background-color: #ff9800;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .floating-cart-icon {
+            font-size: 24px;
+        }
+        
+        .floating-cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+        /* ซ่อนปุ่มถ้าตะกร้าว่าง */
+        
+        .floating-cart.empty-cart {
+            display: none;
+        }
     </style>
 </head>
 
@@ -165,7 +224,7 @@
             <a href="contact.html">ติดต่อเรา</a>
             <div class="cart-icon-wrapper" onclick="goToCart()">
                 <span class="cart-icon">🛒</span>
-                <span class="cart-badge">0</span>
+                <span class="cart-badge" id="navbarCartBadge">0</span>
             </div>
         </nav>
     </header>
@@ -290,17 +349,35 @@
         </div>
     </footer>
 
+    <div class="floating-cart" onclick="goToCart()" role="button" aria-label="กลับไปแก้ไขตะกร้าสินค้า">
+        <div class="floating-cart-button">
+            <span class="floating-cart-icon">🛒</span>
+            <span class="floating-cart-badge" id="floatingCartBadge">0</span>
+        </div>
+    </div>
+
     <script src="cart.js"></script>
     <script>
-        // ตรวจสอบว่ามีสินค้าในตะกร้าหรือไม่
-        if (cart.items.length === 0) {
+        // ===================================
+        // CHECKOUT PAGE LOGIC
+        // ===================================
+
+        // 1. ตรวจสอบว่ามีสินค้าหรือไม่
+        if (!cart || cart.items.length === 0) {
             window.location.href = 'cart.html';
         }
 
-        // แสดงสรุปคำสั่งซื้อ
+        // 2. แสดงสรุปคำสั่งซื้อ
         function renderOrderSummary() {
             const summaryItems = document.getElementById('summaryItems');
+            if (!summaryItems) return;
+
             summaryItems.innerHTML = '';
+
+            // อัพเดท Badge ที่ Navbar และ Floating Button
+            const navBadge = document.getElementById('navbarCartBadge');
+            if (navBadge) navBadge.textContent = cart.getItemCount();
+            updateFloatingCart();
 
             cart.items.forEach(item => {
                 const itemDiv = document.createElement('div');
@@ -325,28 +402,27 @@
             document.getElementById('summaryTotal').textContent = total.toLocaleString() + ' ฿';
         }
 
-        // เลือกวิธีการชำระเงิน
+        // 3. เลือกวิธีการชำระเงิน
         function selectPayment(method) {
             document.querySelectorAll('.payment-option').forEach(option => {
                 option.classList.remove('selected');
             });
-            event.currentTarget.classList.add('selected');
+            // ใช้ event.currentTarget เพื่อความแม่นยำ หรือหา element จาก onclick
+            const selectedOption = document.querySelector(`.payment-option input[value="${method}"]`).parentElement;
+            if (selectedOption) selectedOption.classList.add('selected');
+
             document.querySelector(`input[value="${method}"]`).checked = true;
         }
 
-        // ส่งฟอร์ม
+        // 4. ส่งฟอร์ม (Submit)
         document.getElementById('checkoutForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // แสดง loading
             const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
             submitBtn.textContent = 'กำลังดำเนินการ...';
             submitBtn.disabled = true;
 
-            // จำลองการส่งข้อมูล
             setTimeout(() => {
-                // รวบรวมข้อมูลคำสั่งซื้อ
                 const orderData = {
                     customer: {
                         firstName: document.getElementById('firstName').value,
@@ -364,19 +440,41 @@
                     orderDate: new Date().toISOString()
                 };
 
-                // บันทึกคำสั่งซื้อ (ในระบบจริงจะส่งไปยัง server)
                 localStorage.setItem('lastOrder', JSON.stringify(orderData));
-
-                // ล้างตะกร้า
                 cart.clearCart();
-
-                // ไปหน้าขอบคุณ
                 window.location.href = 'order-success.html';
             }, 2000);
         });
 
-        // โหลดสรุปคำสั่งซื้อ
-        renderOrderSummary();
+        // 5. Floating Cart Update
+        function updateFloatingCart() {
+            const badge = document.getElementById('floatingCartBadge');
+            const floatingCart = document.querySelector('.floating-cart');
+
+            if (typeof cart !== 'undefined' && badge) {
+                const count = cart.getItemCount();
+                badge.textContent = count;
+
+                if (count > 0) {
+                    badge.style.display = 'flex';
+                    floatingCart.classList.remove('empty-cart');
+                } else {
+                    badge.style.display = 'none';
+                    // floatingCart.classList.add('empty-cart');
+                }
+            }
+        }
+
+        // 6. Override goToCart
+        // หน้า Checkout ถ้ากดตะกร้า ให้กลับไปหน้า cart.html เพื่อแก้ไขของ
+        window.goToCart = function() {
+            window.location.href = 'cart.html';
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderOrderSummary();
+        });
     </script>
 </body>
 
